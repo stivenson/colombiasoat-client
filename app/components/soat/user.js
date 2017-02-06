@@ -3,18 +3,25 @@ import API from '../../components/api';
 import {Spinner,Button} from '../../components/ui';
 
 export const User = {
-    vm(){
+    vm(p){
         return {
-            cc: m.prop(''),
             names: m.prop(''),
             surnames: m.prop(''),
             email: m.prop(''),
             password: m.prop(''),
-            saving: m.prop(false)
+            type_document: m.prop(''),
+            number_document: m.prop(''),
+            phone: m.prop(''),
+            saving: m.prop(false),
+            fetchTypeDocuments: () => {
+                return API.get('type_documents');
+            },
+            type_documents: m.prop('empty')
         }
     },
-    controller(){
-        this.vm = User.vm();
+    controller(p){
+        this.vm = User.vm(p);
+        this.vm.fetchTypeDocuments().then(type_documents).then(()=>m.redraw());
 
         this.submit = (event) => {
             event.preventDefault();
@@ -24,24 +31,20 @@ export const User = {
             }
 
             let payload = {
-                cc: this.vm.cc(),
                 names: this.vm.names(),
                 surnames: this.vm.surnames(),
                 email: this.vm.email(),
                 password: this.vm.password(),
-                role_id: 2
+                rol: 2,
+                type_document: this.vm.type_document(),
+                number_document: this.vm.number_document(),
+                phone: this.vm.phone()
             }
             this.vm.saving(true);
-            API.post('users',payload).then((r) => this.vm.saving(false)).then(() => m.route('/dashboard'));
+            API.post('users',payload).then(p.user).then((r) => this.vm.saving(false));
         }
-
-        this.toReturn = () => {m.route('/dashboard')}
     },
     view(c){
-
-        if(localStorage.getItem('user') == 'false' || localStorage.getItem('user') == null){
-            m.route("/");
-        }
         
         return (
             <div class="user">
@@ -49,15 +52,29 @@ export const User = {
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <form onsubmit={c.submit.bind(c)} >
+                                
+                                <label class="pt-select">
+                                    Tipo Documento
+                                    <select name="type_document" 
+                                            onchange={m.withAttr('value', c.vm.type_document)} 
+                                            required>
+                                        <option> -- </option>
+                                        {c.vm.type_documents().map((t) => {
+                                            return (
+                                                <option value={t.id} >{t.name}</option>
+                                            );
+                                        })}
+                                    </select>
+                                </label>
 
                                 <label class="pt-label">
-                                    Número Cédula
+                                    Número Documento
                                     <input
                                         type="number"
                                         class="pt-input pt-fill"
-                                        name="cc"
-                                        oninput={m.withAttr('value', c.vm.cc)}
-                                        value={c.vm.cc()}
+                                        name="number_document"
+                                        oninput={m.withAttr('value', c.vm.number_document)}
+                                        value={c.vm.number_document()}
                                         placeholder="Solo números"
                                         required
                                     />
@@ -91,6 +108,19 @@ export const User = {
                                 </label>
 
                                 <label class="pt-label">
+                                    # télefono fijo o móvil
+                                    <input
+                                        type="number"
+                                        class="pt-input pt-fill"
+                                        name="phone"
+                                        oninput={m.withAttr('value', c.vm.phone)}
+                                        value={c.vm.phone()}
+                                        placeholder="Solo números"
+                                        required
+                                    />
+                                </label>
+
+                                <label class="pt-label">
                                     Correo electrónico
                                     <input
                                         type="email"
@@ -118,7 +148,6 @@ export const User = {
                                 </label>
 
                                 <div class="text-center">
-                                    <Button type="button" intent="default" onclick={c.toReturn.bind(c)}>Atrás</Button>
                                     <Button loading={c.vm.saving()} type="submit">Guardar</Button>
                                 </div>
                             </form>
