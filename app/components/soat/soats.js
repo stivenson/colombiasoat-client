@@ -18,8 +18,8 @@ export const Soats = {
     },
     controller(p){
         this.vm = Soats.vm(p);
-        this.vm.working();
-        this.vm.fetchSoats(p.vehicle().id()).then(this.vm.listSoats).then(()=>m.redraw());
+        this.vm.working(true);
+        this.vm.fetchSoats(p.vehicle().id()).then(this.vm.listSoats).then(()=>this.vm.working(false)).then(()=>m.redraw());
     },
     view(c,p){
 
@@ -41,7 +41,7 @@ export const Soats = {
                        </thead>
                        <tbody>
                         {c.vm.listSoats().map((s) => {
-                            return <tr><td>{s.number_cart}</td><td>{s.holder_cart}</td><td>{s.created_at}</td><td>{s.expiration}</td></tr>
+                            return <tr><td>{s.number_cart()}</td><td>{s.holder_cart()}</td><td>{s.created_at()}</td><td>{s.expiration()}</td></tr>
                         })}
                        </tbody>
                     </table>

@@ -1,20 +1,11 @@
 import m from 'mithril';
-
+import DashboardList from '../../components/dashboard/list';
 
 export const Dashboard = {
-    vm(){
-        return {
-            state: {
-
-            }
-        }
+    controller(p){
     },
-    controller(){
-
-
-    },
-    view(c){
-        return <span>Acá ira un listado de soats vendidos y una opción pa detallar cada uno</span>
+    view(c,p){
+        return <DashboardList />
     }
 }
 

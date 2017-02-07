@@ -26,7 +26,7 @@ export const Soat = {
             validateDate: (date) => {
                 let d1 = new Date();
                 let d2 = new Date(date);
-                return d2.getTime() >== d1.getTime();
+                return d2.getTime() >= d1.getTime();
             },
             working: m.prop(false),
             fetchSubtypeVehicle: (idSubtypeVehicle) => {
