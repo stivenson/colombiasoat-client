@@ -1,67 +1,61 @@
 import m from 'mithril';
 import API from '../../components/api';
 import {Spinner,Button} from '../../components/ui';
+import {MUser} from './models';
 
 export const User = {
     vm(p){
         return {
-            names: m.prop(''),
-            surnames: m.prop(''),
-            email: m.prop(''),
-            password: m.prop(''),
-            type_document: m.prop(''),
-            number_document: m.prop(''),
-            phone: m.prop(''),
-            saving: m.prop(false),
             fetchTypeDocuments: () => {
                 return API.get('type_documents');
             },
-            type_documents: m.prop('empty')
+            type_documents: m.prop([]),
+            working: m.prop(false)
         }
     },
     controller(p){
         this.vm = User.vm(p);
-        this.vm.fetchTypeDocuments().then(type_documents).then(()=>m.redraw());
+        this.vm.fetchTypeDocuments().then(this.vm.type_documents).then(()=>m.redraw());
 
         this.submit = (event) => {
             event.preventDefault();
 
-            if(this.vm.saving()){
+            if(this.vm.working()){
                 return;
             }
 
             let payload = {
-                names: this.vm.names(),
-                surnames: this.vm.surnames(),
-                email: this.vm.email(),
-                password: this.vm.password(),
+                names: p.user().names(),
+                surnames: p.user().surnames(),
+                email: p.user().email(),
+                password: p.user().password(),
                 rol: 2,
-                type_document: this.vm.type_document(),
-                number_document: this.vm.number_document(),
-                phone: this.vm.phone()
+                type_document_id: p.user().type_document_id(),
+                number_document: p.user().number_document(),
+                phone: p.user().phone()
             }
-            this.vm.saving(true);
-            API.post('users',payload).then(p.user).then((r) => this.vm.saving(false));
+            this.vm.working(true);
+            API.post('users',payload).then((r)=>{p.user(new MUser(r))}).then((r) => this.vm.working(false));
         }
     },
-    view(c){
+    view(c,p){
         
         return (
             <div class="user">
-                <div class="customs-dashboard-forms">
+                <div>
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <form onsubmit={c.submit.bind(c)} >
                                 
                                 <label class="pt-select">
-                                    Tipo Documento
+                                    Tipo Documento &nbsp;&nbsp;&nbsp;
                                     <select name="type_document" 
-                                            onchange={m.withAttr('value', c.vm.type_document)} 
+                                            onchange={m.withAttr('value', p.user().type_document_id)} 
                                             required>
                                         <option> -- </option>
                                         {c.vm.type_documents().map((t) => {
                                             return (
-                                                <option value={t.id} >{t.name}</option>
+                                                <option selected={p.user().type_document_id() == t.id} value={t.id} >{t.name}</option>
                                             );
                                         })}
                                     </select>
@@ -73,8 +67,8 @@ export const User = {
                                         type="number"
                                         class="pt-input pt-fill"
                                         name="number_document"
-                                        oninput={m.withAttr('value', c.vm.number_document)}
-                                        value={c.vm.number_document()}
+                                        oninput={m.withAttr('value', p.user().number_document)}
+                                        value={p.user().number_document()}
                                         placeholder="Solo números"
                                         required
                                     />
@@ -87,8 +81,8 @@ export const User = {
                                         type="text"
                                         class="pt-input pt-fill"
                                         name="names"
-                                        oninput={m.withAttr('value', c.vm.names)}
-                                        value={c.vm.names()}
+                                        oninput={m.withAttr('value', p.user().names)}
+                                        value={p.user().names()}
                                         placeholder=""
                                         required
                                     />
@@ -100,8 +94,8 @@ export const User = {
                                         type="text"
                                         class="pt-input pt-fill"
                                         name="surnames"
-                                        oninput={m.withAttr('value', c.vm.surnames)}
-                                        value={c.vm.surnames()}
+                                        oninput={m.withAttr('value', p.user().surnames)}
+                                        value={p.user().surnames()}
                                         placeholder=""
                                         required
                                     />
@@ -113,8 +107,8 @@ export const User = {
                                         type="number"
                                         class="pt-input pt-fill"
                                         name="phone"
-                                        oninput={m.withAttr('value', c.vm.phone)}
-                                        value={c.vm.phone()}
+                                        oninput={m.withAttr('value', p.user().phone)}
+                                        value={p.user().phone()}
                                         placeholder="Solo números"
                                         required
                                     />
@@ -126,8 +120,8 @@ export const User = {
                                         type="email"
                                         class="pt-input pt-fill"
                                         name="email"
-                                        oninput={m.withAttr('value', c.vm.email)}
-                                        value={c.vm.email()}
+                                        oninput={m.withAttr('value', p.user().email)}
+                                        value={p.user().email()}
                                         placeholder="Nombres"
                                         required
                                     />
@@ -140,15 +134,15 @@ export const User = {
                                         type="password"
                                         class="pt-input pt-fill"
                                         name="password"
-                                        oninput={m.withAttr('value', c.vm.password)}
-                                        value={c.vm.password()}
+                                        oninput={m.withAttr('value', p.user().password)}
+                                        value={p.user().password()}
                                         placeholder=""
                                         required
                                     />
                                 </label>
 
                                 <div class="text-center">
-                                    <Button loading={c.vm.saving()} type="submit">Guardar</Button>
+                                    <Button loading={c.vm.working()} type="submit">Guardar</Button>
                                 </div>
                             </form>
                         </div>

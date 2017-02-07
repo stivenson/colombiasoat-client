@@ -1,0 +1,7 @@
+.soats {
+	padding: 15px;
+	& .message-plate {
+		font-size: 12px;
+		color: #146B00;
+	}
+}

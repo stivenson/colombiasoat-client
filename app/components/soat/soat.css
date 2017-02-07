@@ -1,9 +1,8 @@
-.plate{
+.soat {
 	max-width: 400px;
 
 	& .message-plate {
 		font-size: 12px;
 		 color: #146B00;
 	}
-
 }

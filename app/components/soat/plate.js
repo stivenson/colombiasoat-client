@@ -1,17 +1,23 @@
 import m from 'mithril';
 import API from '../../components/api';
 import {Spinner} from '../../components/ui';
+import {User,Vehicle} from '../../components/soat/models';
 
 export const Plate = {
     vm(p){
         return {
-            getInfo: () => {
-                this.working(true);
-                API.get(`users/showWithPlate/${p.plate}`).then(p.user).then(()=>p.working(false)).then(()=>p.refresh());
-                this.working(true);
-                API.get(`vehicles/showWithPlate/${p.plate}`).then(p.vehicle).then(()=>p.working(false)).then(()=>p.refresh());
-                this.working(true);
-                API.get(`soats/showWithPlate/${p.plate}`).then(p.soats).then(()=>p.working(false));
+            getInfo: (e) => {
+                if(e.keyCode == 13) {
+                    console.log('enter');
+                    if(p.plate().trim() != ''){
+                        p.working(true);
+                        API.get(`users/showWithPlate/${p.plate()}`,User).then(p.user).then(()=>p.working(false)).then(()=>p.refresh());
+                        p.working(true);
+                        API.get(`vehicles/showWithPlate/${p.plate()}`,Vehicle).then(p.vehicle).then(()=>p.working(false)).then(()=>p.refresh());
+                        p.working(true);
+                        API.get(`soats/showWithPlate/${p.plate()}`).then(p.soats).then(()=>p.working(false));
+                    }
+                }
             }
         }
     },
@@ -29,20 +35,18 @@ export const Plate = {
                 <div class="plate">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <form>
-                                <label class="pt-label">
-                                    Indique su placa <i>(y finalize con enter para buscar información)</i>
-                                    <input
-                                        type="text"
-                                        class="pt-input pt-fill"
-                                        name="plate"
-                                        oninput={m.withAttr('value',p.plate)}
-                                        onKeyPress={c.vm.getInfo.bind(c.vm)}
-                                        value={p.plate()}
-                                        placeholder="Solo números y letras"
-                                    />
-                                </label>
-                            </form>
+                            <label class="pt-label">
+                                Indique su placa <i class="message-plate">(y finalize con enter para buscar información)</i>
+                                <input
+                                    type="text"
+                                    class="pt-input pt-fill"
+                                    name="plate"
+                                    oninput={m.withAttr('value',p.plate)}
+                                    onKeyPress={c.vm.getInfo.bind(c.vm)}
+                                    value={p.plate()}
+                                    placeholder="Solo números y letras"
+                                />
+                            </label>
                         </div>
                     </div>
                 </div>
