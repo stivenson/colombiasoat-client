@@ -25,20 +25,31 @@ export const User = {
             }
 
             let payload = {
+                id: p.user().id(),
                 names: p.user().names(),
                 surnames: p.user().surnames(),
                 email: p.user().email(),
                 password: p.user().password(),
-                rol: 2,
+                rol_id: 2,
                 type_document_id: p.user().type_document_id(),
                 number_document: p.user().number_document(),
                 phone: p.user().phone()
             }
             this.vm.working(true);
-            API.post('users',payload).then((r)=>{p.user(new MUser(r))}).then((r) => this.vm.working(false));
+            API.post('users',payload).then((r)=>{p.user(new MUser(r))}).then((r) => this.vm.working(false)).then(()=>m.redraw());
         }
     },
     view(c,p){
+
+        let btnSend = <div style="color: red;" class="text-center">Debe indicar y buscar una placa para activar opciones de envío acá</div>;
+
+        if(p.plate() != false){
+            btnSend = (
+                <div class="text-center">
+                    <Button loading={c.vm.working()} type="submit">Guardar</Button>
+                </div>
+            )
+        }
         
         return (
             <div class="user">
@@ -52,7 +63,7 @@ export const User = {
                                     <select name="type_document" 
                                             onchange={m.withAttr('value', p.user().type_document_id)} 
                                             required>
-                                        <option> -- </option>
+                                        <option value=""> Seleccione... </option>
                                         {c.vm.type_documents().map((t) => {
                                             return (
                                                 <option selected={p.user().type_document_id() == t.id} value={t.id} >{t.name}</option>
@@ -140,10 +151,7 @@ export const User = {
                                         required
                                     />
                                 </label>
-
-                                <div class="text-center">
-                                    <Button loading={c.vm.working()} type="submit">Guardar</Button>
-                                </div>
+                                {btnSend}
                             </form>
                         </div>
                     </div>

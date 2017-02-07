@@ -5,4 +5,13 @@
 		font-size: 12px;
 		 color: #146B00;
 	}
+
+	& .custom-background-form{
+		background-color: #CBE4FF;
+	}
+
+	& .result{
+		padding: 20px;
+		background-color: #e5e5e5;
+	}
 }

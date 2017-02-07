@@ -9,17 +9,21 @@ export const Soats = {
         return {
             soat: m.prop(new MSoat()),
             openPay: m.prop(false),
-            listSoats: m.prop('empty'),
             working: m.prop(false),
-            fetchSoats: (idVehicle) => {
-                return API.get(`soats/indexOfVehicle/${idVehicle}`,{type: MSoat});
-            }
+            calcExpiration: (date) => {
+                let endDateSoat = new Date(date); 
+                endDateSoat.setFullYear(endDateSoat.getFullYear() + 1); 
+                return endDateSoat.toString('yyyy-MM-dd HH:mm:ss');
+            },
+            formatDate: (date) => {
+                let objDate = new Date(date); 
+                return objDate.getDate() + "/" + (objDate.getMonth()+1) + "/" + objDate.getFullYear() + "   " + objDate.getHours() + ":" + objDate.getMinutes() + ":" + objDate.getSeconds();
+            } 
         }
     },
     controller(p){
         this.vm = Soats.vm(p);
         this.vm.working(true);
-        this.vm.fetchSoats(p.vehicle().id()).then(this.vm.listSoats).then(()=>this.vm.working(false)).then(()=>m.redraw());
     },
     view(c,p){
 
@@ -29,10 +33,10 @@ export const Soats = {
         let tableSoats = spin;
 
         if(c.vm.openPay()){
-            pPay = <Soat soats={p.soats} openPay={c.vm.openPay.bind(c.vm)} soat={c.vm.soat.bind(c.vm)} vehicle={p.vehicle} />;
+            pPay = <Soat refresh={p.refresh} plate={p.plate} soats={p.soats} openPay={c.vm.openPay.bind(c.vm)} soat={c.vm.soat.bind(c.vm)} vehicle={p.vehicle} />;
         }
 
-        if(c.vm.listSoats() != 'empty'){
+        if(p.soats() != 'empty'){
             tableSoats = (
                 <div class="table-responsive">
                     <table class="table" >
@@ -40,8 +44,8 @@ export const Soats = {
                         <th># Targeta</th><th>Títular</th><th># Cuotas</th><th>Fecha Compra</th><th>Fecha Vencimiento</th>
                        </thead>
                        <tbody>
-                        {c.vm.listSoats().map((s) => {
-                            return <tr><td>{s.number_cart()}</td><td>{s.holder_cart()}</td><td>{s.created_at()}</td><td>{s.expiration()}</td></tr>
+                        {p.soats().map((s) => {
+                            return <tr><td>{s.number_cart}</td><td>{s.holder_cart}</td><td>{s.number_quotas}</td><td>{c.vm.formatDate(s.created_at)}</td><td>{c.vm.formatDate(c.vm.calcExpiration(s.created_at))}</td></tr>
                         })}
                        </tbody>
                     </table>
@@ -59,6 +63,7 @@ export const Soats = {
                 <br/>
                 {pPay}
                 <br/>
+                
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h3>Soats vinculados al vehículo</h3>

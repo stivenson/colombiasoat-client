@@ -5,6 +5,7 @@ import API from '../api';
 
 export const MUser = function(data) {
     data = data || {};
+    if(data == 'null') data = {};
 
     this.id = m.prop(data.id || false);
     this.names = m.prop(data.names || ""),
@@ -20,7 +21,7 @@ export const MUser = function(data) {
 
 export const MVehicle = function(data) {
     data = data || {};
-
+    if(data == 'null') data = {};
     this.id = m.prop(data.id || false);
     this.subtype_vehicle_id = m.prop(data.subtype_vehicle_id || false);
     this.type_vehicle = m.prop(data.type_vehicle || false); 
@@ -29,14 +30,14 @@ export const MVehicle = function(data) {
     this.n_passengers = m.prop(data.n_passengers || "");
     this.cylinder = m.prop(data.cylinder || "");
     this.tonnes = m.prop(data.tonnes || "");
-
+    this.plate = m.prop(data.plate || "");
 
 }
 
 
 export const MSoat = function(data) {
     data = data || {};
-
+    if(data == 'null') data = {};
     this.id = m.prop(data.id || false);
     this.vehicle_id = m.prop(data.vehicle_id || false);
     this.number_cart = m.prop(data.number_cart || "");

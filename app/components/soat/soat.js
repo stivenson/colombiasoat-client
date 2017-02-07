@@ -21,7 +21,6 @@ export const Soat = {
             end: () => {
                 p.soat(m.prop(new MSoat()));
                 p.openPay(!p.openPay()); 
-                p.soats();
             },
             validateDate: (date) => {
                 let d1 = new Date();
@@ -38,7 +37,7 @@ export const Soat = {
     },
     controller(p){
         this.vm = Soat.vm(p);
-        this.vm.fetchSubtypeVehicle(p.vehicle().subtype_vehicle())
+        this.vm.fetchSubtypeVehicle(p.vehicle().subtype_vehicle_id())
             .then(this.vm.subtype_vehicle)
             .then(()=>m.redraw());
 
@@ -65,7 +64,16 @@ export const Soat = {
             }
             
             this.vm.working(true);
-            API.post('soats',payload).then((r)=>{p.soat(new MSoat(r))}).then((r) => this.vm.working(false)).then(()=>this.vm.result(true));
+            API.post('soats',payload)
+                .then((r)=>{p.soat(new MSoat(r))})
+                .then((r) => this.vm.working(false))
+                .then(()=>this.vm.result(true))
+                .then(()=>p.refresh())
+                .then(()=>{
+                    API.get(`soats/showWithPlate/${p.plate()}`).then((r)=>{
+                        if(r != null){p.soats(r)}else{p.soats([])}
+                    }).then(()=>p.refresh());  
+                });
         }
     },
     view(c,p){
@@ -78,67 +86,91 @@ export const Soat = {
             pMessageDate = <div class="message-invalid-date">La Targeta Esta vencida, por favor indique otra, o verifique este dato.</div>      
         }
 
-        if(c.vm.result()){
-            pResult = (
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3>Datos Compra del Soat</h3>
-                        <table class="table" id="tblToPdf" >
-                           <tbody>
-                                <tr>
-                                    <td>
-                                        Valor prima<br/>
-                                        ${c.vm.subtype_vehicle().prima}
-                                    </td>
-                                    <td>
-                                        Contribución Fosyga<br/>
-                                        ${parse(parseInt(c.vm.subtype_vehicle().prima) * 0.5)}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Tasa RUNT<br/>
-                                        $1.610
-                                    </td>
-                                    <td>
-                                        Total<br/>
-                                        ${parseInt(c.vm.subtype_vehicle().prima) + (parseInt(parseInt(c.vm.subtype_vehicle().prima) * 0.5)) + 1610}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <b>Coberturas:</b><br />
-                                        <p>
-                                            ■ Muerte y gastos funerarios: 750 SMLDV<br/>
-                                            ■ Gastos médicos: 800 SMLDV<br/>
-                                            ■ Incapacidad permanente: 180 SMLDV<br/>
-                                            ■ Gastos de transporte: 10 SMLDV<br/>
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        <b>Inicio de vigencia</b> {p.soat().created_at()}
-                                    </td>    
-                                </tr>
-                           </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <Button onclick={c.vm.end.bind(c.vm)}>Finalizar</Button>
-                    </div>
-                    <div class="col-md-6">
-                        <Button onclick={c.vm.print.bind(c.vm)}>Descargar en Pdf</Button>
-                    </div>
+        let btnSend;
+
+        if(p.vehicle().id() != false){
+            btnSend = (
+                <div class="text-center">
+                    <Button loading={c.vm.working()} type="submit">Guardar</Button>
+                    {pMessageDate}
                 </div>
-            );
+            )
+        }else{
+            btnSend = <div style="color: red;" class="text-center">Debe guardar datos del vehículo, para activar opciones de envío acá</div>;
         }
+        
+        let prima = 0;
+
+        if(c.vm.subtype_vehicle() != false){
+            prima = c.vm.subtype_vehicle().prima;
+            if(c.vm.result()){
+                pResult = (
+                    <div class="result">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3>Datos Compra del Soat</h3>
+                                <table class="table" id="tblToPdf" >
+                                   <tbody>
+                                        <tr>
+                                            <td>
+                                                Valor prima<br/>
+                                                ${prima}
+                                            </td>
+                                            <td>
+                                                Contribución Fosyga<br/>
+                                                ${parseInt(parseInt(prima) * 0.5)}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Tasa RUNT<br/>
+                                                $1.610
+                                            </td>
+                                            <td>
+                                                Total<br/>
+                                                ${parseInt(prima) + (parseInt(parseInt(prima) * 0.5)) + 1610}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <b>Coberturas:</b><br />
+                                                <p>
+                                                    ■ Muerte y gastos funerarios: 750 SMLDV<br/>
+                                                    ■ Gastos médicos: 800 SMLDV<br/>
+                                                    ■ Incapacidad permanente: 180 SMLDV<br/>
+                                                    ■ Gastos de transporte: 10 SMLDV<br/>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" >
+                                                <b>Inicio de vigencia</b> {p.soat().created_at()}
+                                            </td>    
+                                        </tr>
+                                   </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <Button small fill intent="default" onclick={c.vm.end.bind(c.vm)}>Finalizar</Button>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <Button small fill onclick={c.vm.print.bind(c.vm)}>Descargar en Pdf</Button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        }else{
+            pResult = <div class="text-center"><Spinner /></div>;
+        }
+
+
         
         return (
             <div class="soat">
                 <div class={!c.vm.result() ? '':'hidden'}>
                     <div class="panel panel-default">
-                        <div class="panel-body">
+                        <div class="panel-body custom-background-form">
                             <form onsubmit={c.submit.bind(c)} >
 
                                 <label class="pt-label">
@@ -205,11 +237,7 @@ export const Soat = {
                                         required
                                     />
                                 </label>
-
-                                <div class="text-center">
-                                    <Button loading={c.vm.working()} type="submit">Guardar</Button>
-                                    {pMessageDate}
-                                </div>
+                                {btnSend}
                             </form>
                         </div>
                     </div>

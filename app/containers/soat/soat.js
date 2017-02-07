@@ -13,13 +13,9 @@ const Soat = {
             working: m.prop(false),
             user: m.prop(new MUser()),
             vehicle: m.prop(new MVehicle()),
-            soats: m.prop('Empty'),
+            soats: m.prop('empty'),
             refresh: () => {m.redraw()},
-            refreshSoats: (v) => {
-                let vf = v || false;
-            	if(v != false){this.soats(v)};
-            	m.redraw();
-            }
+            info: m.prop(false)
         }
     },
     controller(){
@@ -29,23 +25,24 @@ const Soat = {
         return (
             <div class="soat">
             	<Plate 
+                info={c.vm.info.bind(c.vm)}
             	plate={c.vm.plate.bind(c.vm)} 
             	working={c.vm.working.bind(c.vm)} 
             	user={c.vm.user.bind(c.vm)} 
             	vehicle={c.vm.vehicle.bind(c.vm)} 
-            	soats={c.vm.refreshSoats.bind(c.vm)}
+            	soats={c.vm.soats.bind(c.vm)}
             	refresh={c.vm.refresh.bind(c.vm)} />
             	<div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <User plate={c.vm.plate.bind(c.vm)}  working={c.vm.working.bind(c.vm)}  user={c.vm.user.bind(c.vm)} />
+                    </div>
             		<div class="col-md-6 col-sm-6 col-xs-12">
-            			<Vehicle working={c.vm.working.bind(c.vm)} vehicle={c.vm.vehicle.bind(c.vm)} user={c.vm.user.bind(c.vm)} />
+            			<Vehicle plate={c.vm.plate.bind(c.vm)}  working={c.vm.working.bind(c.vm)}  vehicle={c.vm.vehicle.bind(c.vm)} user={c.vm.user.bind(c.vm)} />
             		</div>	
-            		<div class="col-md-6 col-sm-6 col-xs-12">
-            			<User working={c.vm.working.bind(c.vm)}  user={c.vm.user.bind(c.vm)} />
-            		</div>
             	</div>
             	<div class="row">
             		<div class="col-md-12">
-            			<Soats working={c.vm.working.bind(c.vm)} soats={c.vm.refreshSoats.bind(c.vm)} vehicle={c.vm.vehicle.bind(c.vm)} />
+            			<Soats working={c.vm.working.bind(c.vm)} soats={c.vm.soats.bind(c.vm)} refresh={c.vm.refresh.bind(c.vm)} vehicle={c.vm.vehicle.bind(c.vm)} plate={c.vm.plate.bind(c.vm)} />
             		</div>	
             	</div>
             </div>

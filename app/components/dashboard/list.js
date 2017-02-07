@@ -8,8 +8,9 @@ export const DashboardList = {
         return {
             listSoats: m.prop('empty'),
             working: m.prop(false),
+            detail: m.prop(false),
             fetchSoats: () => {
-                return API.get('soats/index',{type: MSoat});
+                return API.get('soats',{type: MSoat});
             }
         }
     },
@@ -36,11 +37,69 @@ export const DashboardList = {
                     <div class="table-responsive">
                         <table class="table" >
                            <thead>
-                            <th># Targeta</th><th>Títular</th><th># Cuotas</th><th>Fecha Compra</th><th>Fecha Vencimiento</th>
+                            <th># Targeta</th><th>Títular</th><th># Cuotas</th><th>Fecha Compra</th><th>Fecha Vencimiento</th><th></th>
                            </thead>
                            <tbody>
                             {c.vm.listSoats().map((s) => {
-                                return <tr><td>{s.number_cart()}</td><td>{s.holder_cart()}</td><td>{s.created_at()}</td><td>{s.expiration()}</td></tr>
+                                return (
+                                    <tr>
+                                        <td>{s.number_cart()}</td>
+                                        <td>{s.holder_cart()}</td>
+                                        <td>{s.created_at()}</td>
+                                        <td>{s.expiration()}</td>
+                                        <td>
+                                            <a onclick={c.vm.detail.bind(c.vm,s.id())}><span class="pt-icon-remove-row-top"></span> Detallar Soar</a>
+                                            <br/>
+                                            <div class={c.vm.detail() == s.id()?'':'hidden'}>
+                                                <h3>Detalle Soat</h3>
+                                                <table class="table" >
+                                                   <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                Valor prima<br/>
+                                                                ${s.prima}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Contribución Fosyga<br/>
+                                                                ${parse(parseInt(s.prima) * 0.5)}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Tasa RUNT<br/>
+                                                                $1.610
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Total<br/>
+                                                                ${parseInt(s.prima) + (parseInt(parseInt(s.prima) * 0.5)) + 1610}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <b>Coberturas:</b><br />
+                                                                <p>
+                                                                    ■ Muerte y gastos funerarios: 750 SMLDV<br/>
+                                                                    ■ Gastos médicos: 800 SMLDV<br/>
+                                                                    ■ Incapacidad permanente: 180 SMLDV<br/>
+                                                                    ■ Gastos de transporte: 10 SMLDV<br/>
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <b>Inicio de vigencia</b><br/> {s.created_at()}
+                                                            </td>    
+                                                        </tr>
+                                                   </tbody>
+                                                </table>  
+                                            </div>                                         
+                                        </td>
+                                    </tr>
+                                )
                             })}
                            </tbody>
                         </table>
