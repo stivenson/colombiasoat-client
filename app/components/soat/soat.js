@@ -78,7 +78,7 @@ export const Soat = {
     },
     view(c,p){
 
-        let pResult;
+        let pResult = <div id="scrollBottom"></div>;
 
         let pMessageDate;
 
@@ -105,7 +105,7 @@ export const Soat = {
             prima = c.vm.subtype_vehicle().prima;
             if(c.vm.result()){
                 pResult = (
-                    <div class="result">
+                    <div id="scrollBottom" class="result">
                         <div class="row">
                             <div class="col-md-12">
                                 <h3>Datos Compra del Soat</h3>
@@ -161,7 +161,7 @@ export const Soat = {
                 );
             }
         }else{
-            pResult = <div class="text-center"><Spinner /></div>;
+            pResult = <div id="scrollBottom" class="text-center"><Spinner /></div>;
         }
 
 

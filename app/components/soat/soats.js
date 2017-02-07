@@ -18,7 +18,8 @@ export const Soats = {
             formatDate: (date) => {
                 let objDate = new Date(date); 
                 return objDate.getDate() + "/" + (objDate.getMonth()+1) + "/" + objDate.getFullYear() + "   " + objDate.getHours() + ":" + objDate.getMinutes() + ":" + objDate.getSeconds();
-            } 
+            },
+            automaticScroll: m.prop(false)
         }
     },
     controller(p){
@@ -34,6 +35,10 @@ export const Soats = {
 
         if(c.vm.openPay()){
             pPay = <Soat refresh={p.refresh} plate={p.plate} soats={p.soats} openPay={c.vm.openPay.bind(c.vm)} soat={c.vm.soat.bind(c.vm)} vehicle={p.vehicle} />;
+            if(!c.vm.automaticScroll()){
+                setTimeout(()=>document.getElementById('scrollBottom').scrollIntoView(true),200);
+                c.vm.automaticScroll(true);
+            }
         }
 
         if(p.soats() != 'empty'){
