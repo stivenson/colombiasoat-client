@@ -24,13 +24,23 @@ export const Soat = {
                 p.soats();
             },
             validateDate: (date) => {
-                true; // falta implementación
+                let d1 = new Date();
+                let d2 = new Date(date);
+                return d2.getTime() >== d1.getTime();
             },
-            working: m.prop(false)
+            working: m.prop(false),
+            fetchSubtypeVehicle: (idSubtypeVehicle) => {
+                return API.get(`subtype_vehicles/${idSubtypeVehicle}`);
+            },
+            subtype_vehicle: m.prop(false),
+            showMessageDate: m.prop(false)
         }
     },
     controller(p){
         this.vm = Soat.vm(p);
+        this.vm.fetchSubtypeVehicle(p.vehicle().subtype_vehicle())
+            .then(this.vm.subtype_vehicle)
+            .then(()=>m.redraw());
 
         this.submit = (event) => {
             event.preventDefault();
@@ -40,7 +50,8 @@ export const Soat = {
             }
 
             if(!this.vm.validateDate(p.soat().date_end_cart())){
-                // mensaje avisando de fecha invalida y return;
+                this.vm.showMessageDate(true);
+                return;
             }
 
             let payload = {
@@ -61,17 +72,55 @@ export const Soat = {
 
         let pResult;
 
+        let pMessageDate;
+
+        if(c.vm.showMessageDate()){
+            pMessageDate = <div class="message-invalid-date">La Targeta Esta vencida, por favor indique otra, o verifique este dato.</div>      
+        }
+
         if(c.vm.result()){
             pResult = (
                 <div class="row">
                     <div class="col-md-12">
                         <h3>Datos Compra del Soat</h3>
                         <table class="table" id="tblToPdf" >
-                           <thead>
-                             <th>Aja</th>
-                           </thead>
                            <tbody>
-                            <td>Y tu que</td>
+                                <tr>
+                                    <td>
+                                        Valor prima<br/>
+                                        ${c.vm.subtype_vehicle().prima}
+                                    </td>
+                                    <td>
+                                        Contribución Fosyga<br/>
+                                        ${parse(parseInt(c.vm.subtype_vehicle().prima) * 0.5)}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Tasa RUNT<br/>
+                                        $1.610
+                                    </td>
+                                    <td>
+                                        Total<br/>
+                                        ${parseInt(c.vm.subtype_vehicle().prima) + (parseInt(parseInt(c.vm.subtype_vehicle().prima) * 0.5)) + 1610}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>Coberturas:</b><br />
+                                        <p>
+                                            ■ Muerte y gastos funerarios: 750 SMLDV<br/>
+                                            ■ Gastos médicos: 800 SMLDV<br/>
+                                            ■ Incapacidad permanente: 180 SMLDV<br/>
+                                            ■ Gastos de transporte: 10 SMLDV<br/>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" >
+                                        <b>Inicio de vigencia</b> {p.soat().created_at()}
+                                    </td>    
+                                </tr>
                            </tbody>
                         </table>
                     </div>
@@ -159,6 +208,7 @@ export const Soat = {
 
                                 <div class="text-center">
                                     <Button loading={c.vm.working()} type="submit">Guardar</Button>
+                                    {pMessageDate}
                                 </div>
                             </form>
                         </div>

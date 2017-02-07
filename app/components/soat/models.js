@@ -1,6 +1,8 @@
 import m from 'mithril';
 import API from '../api';
 
+// For Castings
+
 export const MUser = function(data) {
     data = data || {};
 
@@ -21,7 +23,7 @@ export const MVehicle = function(data) {
 
     this.id = m.prop(data.id || false);
     this.subtype_vehicle_id = m.prop(data.subtype_vehicle_id || false);
-    this.type_vehicle = 0; // pendiente petición
+    this.type_vehicle = m.prop(data.type_vehicle || false); 
     this.age = m.prop(data.age || ""); 
     this.user_id = m.prop(data.user_id || false);
     this.n_passengers = m.prop(data.n_passengers || "");
@@ -44,8 +46,13 @@ export const MSoat = function(data) {
     this.number_quotas = m.prop(data.number_quotas || 1);
     let created_at = data.created_at || '--';
     this.created_at = m.prop(created_at.substring(0,10));
-    this.expiration = m.prop('--'); // pendiente sumar año a created_at
-
+    if(this.created_at() != '--'){
+        let endDateSoat = new Date(this.created_at()); 
+        endDateSoat.setFullYear(endDateSoat.getFullYear() + 1); 
+        this.expiration = m.prop(endDateSoat.toString('yyyy-MM-dd')); // Virtual field (data calculated)
+    }else{
+        this.expiration = m.prop('--');
+    }
 }
 
 
