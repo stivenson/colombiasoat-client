@@ -51,6 +51,13 @@ const Login = {
 
                     </form>
                 </div>
+                <br/>
+                <br/>
+                <div class="text-center">
+                <b>DATOS PARA INGRESAR:</b><br/>
+                email: stivenson@xxx.com<br/>
+                password: 123456
+                </div>
             </div>
         );
     }
