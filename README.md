@@ -6,7 +6,7 @@
 [Acceso Administracion](http://colombiasoat-client.herokuapp.com/index.html)
 
 # Cliente  (Aplicación SPA en mithril.js con sintaxis JSX usando ES6)
-(Folder colombiasoat-client)
+
 Este es un esqueleto, gestionado por [Brunch](http://brunch.io).
 
 ## Pasos iniciales
