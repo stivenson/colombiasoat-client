@@ -181,7 +181,7 @@ export const Soat = {
             }
         }else{
             if(!p.openPay()){
-                pResult = <div id="scrollBottom" class="text-center"><Spinner /></div>;
+                pResult = <div id="scrollBottom" class="text-center"><Spinner /><br/><br/>Guardando y enviando email...</div>;
             }
         }
 
