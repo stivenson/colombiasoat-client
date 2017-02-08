@@ -1,9 +1,9 @@
 # Aplicación web desplegada en Heroku
     
     * Vista publica de registro de soats 
-    [colombiasoat-client.herokuapp.com/indexsoat.html](http://colombiasoat-client.herokuapp.com/indexsoat.html#/)
+      [Soats](http://colombiasoat-client.herokuapp.com/indexsoat.html#/)
     * Vista de administración 
-    [colombiasoat-client.herokuapp.com/index.html](http://colombiasoat-client.herokuapp.com/index.html#/)
+      [Administracion](http://colombiasoat-client.herokuapp.com/index.html#/)
 
 # Cliente  (Aplicación SPA en mithril.js con sintaxis JSX usando ES6)
 (Folder colombiasoat-client)
