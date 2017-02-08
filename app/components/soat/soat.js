@@ -161,7 +161,7 @@ export const Soat = {
                                         <tr>
                                             <td colspan="2" >
                                                 <b>Inicio de vigencia</b> {c.vm.currentCreatedAt()}
-                                                <br/><i>Esta fecha de inicio se ajusta automaticamente, despues de la vigente y/o posteriores compras, si estas existen.</i>
+                                                <br/><i style="color: blue;">Esta fecha de inicio se ajusta automaticamente, despues de la vigente y/o posteriores compras, si estas existen.</i>
                                             </td>    
                                         </tr>
                                    </tbody>
