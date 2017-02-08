@@ -5,6 +5,9 @@
 * Vista de administración 
 [Acceso Administracion](http://colombiasoat-client.herokuapp.com/index.html)
 
+* Anexo, vídeo corto explicando navegación de la parte de soats 
+[Vídeo](https://youtu.be/xJVQqSxsQcI)   
+
 # Cliente  (Aplicación SPA en mithril.js con sintaxis JSX usando ES6)
 
 Este es un esqueleto, gestionado por [Brunch](http://brunch.io).
