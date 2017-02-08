@@ -8,15 +8,19 @@ export const Soat = {
         return {
             result: m.prop(false),
             print: () => {
-                let tmpElemento = document.createElement('a');
-                let data_type = 'data:application/pdf';
-                let tabla_div = document.getElementById('tblToPdf');
 
-                let tabla_html = tabla_div.outerHTML.replace(/ /g, '%20');
-                tmpElemento.href = data_type + ', ' + tabla_html;
+                let doc = new jsPDF();
+                let source = document.getElementById('tblToPdf');
+                let specialElementHandlers = {
+                    '#bypassme': function (element, renderer) {
+                        return true;
+                    }
+                };
+                doc.fromHTML(source, 0.5, 0.5, {
+                    'width': 75,'elementHandlers': specialElementHandlers
+                });
+                doc.output("dataurlnewwindow");
 
-                tmpElemento.download = 'Datos Compra Soat.pdf';
-                tmpElemento.click();
             },
             end: () => {
                 p.soat(new MSoat());

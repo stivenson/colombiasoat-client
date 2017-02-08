@@ -60,6 +60,9 @@ export const MSoat = function(data) {
     }else{
         this.expiration = m.prop('--');
     }
+    this.prima = m.prop(data.prima || 0);
+    this.d_vehicle = m.prop(data.d_vehicle || ""); 
+    this.plate = m.prop(data.plate || ""); 
 }
 
 

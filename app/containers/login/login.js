@@ -7,13 +7,12 @@ const Login = {
     controller() {
         this.state = {
             email: m.prop(""),
-            password: m.prop(""),
-            role: m.prop(1)
+            password: m.prop("")
         };
 
         this.login = (event) => {
             event.preventDefault();
-            API.post('login',{email:this.state.email(),password: this.state.password(), role_id: this.state.role()})
+            API.post('login',{email:this.state.email(),password: this.state.password()})
                 .then((r)=>{
                     if(r != null && r != false ){
                         localStorage.setItem('user',JSON.stringify(r));

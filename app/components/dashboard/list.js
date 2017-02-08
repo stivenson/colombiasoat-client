@@ -11,6 +11,15 @@ export const DashboardList = {
             detail: m.prop(false),
             fetchSoats: () => {
                 return API.get('soats',{type: MSoat});
+            },
+            formatDate: (date) => {
+                let objDate = new Date(date); 
+                return objDate.getDate() + "/" + (objDate.getMonth()+1) + "/" + objDate.getFullYear() + "   " + objDate.getHours() + ":" + objDate.getMinutes() + ":" + objDate.getSeconds();
+            },
+            calcExpiration: (date) => {
+                let endDateSoat = new Date(date); 
+                endDateSoat.setFullYear(endDateSoat.getFullYear() + 1); 
+                return endDateSoat.toString('yyyy-MM-dd HH:mm:ss');
             }
         }
     },
@@ -45,48 +54,52 @@ export const DashboardList = {
                                     <tr>
                                         <td>{s.number_cart()}</td>
                                         <td>{s.holder_cart()}</td>
-                                        <td>{s.created_at()}</td>
-                                        <td>{s.expiration()}</td>
+                                        <td>{s.number_quotas()}</td>
+                                        <td>{c.vm.formatDate(s.created_at())}</td>
+                                        <td>{c.vm.formatDate(c.vm.calcExpiration(s.created_at()))}</td>
                                         <td>
-                                            <a onclick={c.vm.detail.bind(c.vm,s.id())}><span class="pt-icon-remove-row-top"></span> Detallar Soar</a>
+                                            <a onclick={c.vm.detail.bind(c.vm,s.id())}><span class="pt-icon-standard pt-icon-remove-row-top"></span> Ver Información</a>
                                             <br/>
                                             <div class={c.vm.detail() == s.id()?'':'hidden'}>
-                                                <h3>Detalle Soat</h3>
-                                                <table class="table" >
+                                                <br/>
+                                                <table style="background: #e5e5e5;" class="table" >
                                                    <tbody>
                                                         <tr>
                                                             <td>
-                                                                Valor prima<br/>
-                                                                ${s.prima}
+                                                                <b>Placa</b><br/>
+                                                                {s.plate()}
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>
+                                                                <b>Descripción</b><br/>
+                                                                {s.d_vehicle()}
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td>
+                                                                <b>Valor prima</b><br/>
+                                                                ${s.prima()}
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                Contribución Fosyga<br/>
-                                                                ${parse(parseInt(s.prima) * 0.5)}
+                                                                <b>Contribución Fosyga</b><br/>
+                                                                ${parseInt(parseInt(s.prima()) * 0.5)}
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                Tasa RUNT<br/>
+                                                                <b>Tasa RUNT</b><br/>
                                                                 $1.610
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                Total<br/>
-                                                                ${parseInt(s.prima) + (parseInt(parseInt(s.prima) * 0.5)) + 1610}
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <b>Coberturas:</b><br />
-                                                                <p>
-                                                                    ■ Muerte y gastos funerarios: 750 SMLDV<br/>
-                                                                    ■ Gastos médicos: 800 SMLDV<br/>
-                                                                    ■ Incapacidad permanente: 180 SMLDV<br/>
-                                                                    ■ Gastos de transporte: 10 SMLDV<br/>
-                                                                </p>
+                                                                <b>Total</b><br/>
+                                                                ${parseInt(s.prima()) + (parseInt(parseInt(s.prima()) * 0.5)) + 1610}
                                                             </td>
                                                         </tr>
                                                         <tr>
