@@ -6,6 +6,7 @@ import API from '../api';
 export const MUser = function(data) {
     data = data || {};
     if(data == 'null') data = {};
+    if(data == false || data == true) data = {};
 
     this.id = m.prop(data.id || false);
     this.names = m.prop(data.names || ""),
@@ -20,7 +21,11 @@ export const MUser = function(data) {
 
 
 export const MVehicle = function(data) {
+    
+    console.log(data);  
+    
     data = data || {};
+    if(data == false || data == true) data = {};
     if(data == 'null') data = {};
     this.id = m.prop(data.id || false);
     this.subtype_vehicle_id = m.prop(data.subtype_vehicle_id || false);
@@ -38,6 +43,7 @@ export const MVehicle = function(data) {
 export const MSoat = function(data) {
     data = data || {};
     if(data == 'null') data = {};
+    if(data == false || data == true) data = {};
     this.id = m.prop(data.id || false);
     this.vehicle_id = m.prop(data.vehicle_id || false);
     this.number_cart = m.prop(data.number_cart || "");

@@ -45,7 +45,10 @@ export const Vehicle = {
                 user_id: p.user().id()
             }
             this.vm.working(true);
-            API.post('vehicles',payload).then((r)=>{p.vehicle(new MVehicle(r))}).then((r) => this.vm.working(false)).then(()=>m.redraw());
+            let updated = false;
+            API.post('vehicles',payload).then((r)=>{
+                    if(r != false && r != 'false' && r != true && r != 'true'){p.vehicle(new MVehicle(r))}else{updated=true}
+                }).then((r) => this.vm.working(false)).then(()=>{m.redraw()});
         }
     },
     view(c,p){
@@ -134,7 +137,7 @@ export const Vehicle = {
 
 
                                 <label class="pt-label">
-                                    Número de pasajeros
+                                    Número de pasajeros <span style="color:green">(Deje en blanco, si no aplica)</span>
                                     <input
                                         type="number"
                                         class="pt-input pt-fill"
@@ -146,7 +149,7 @@ export const Vehicle = {
                                 </label>
 
                                 <label class="pt-label">
-                                    Cilindraje (cc)
+                                    Cilindraje (cc) <span style="color:green">(Deje en blanco, si no aplica)</span>
                                     <input
                                         type="number"
                                         class="pt-input pt-fill"
@@ -159,7 +162,7 @@ export const Vehicle = {
                                 </label>
 
                                 <label class="pt-label">
-                                    Toneladas 
+                                    Toneladas <span style="color:green">(Deje en blanco, si no aplica)</span>
                                     <input
                                         type="number"
                                         step="0.01"

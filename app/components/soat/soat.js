@@ -19,7 +19,7 @@ export const Soat = {
                 tmpElemento.click();
             },
             end: () => {
-                p.soat(m.prop(new MSoat()));
+                p.soat(new MSoat());
                 p.openPay(!p.openPay()); 
             },
             validateDate: (date) => {
@@ -32,14 +32,23 @@ export const Soat = {
                 return API.get(`subtype_vehicles/${idSubtypeVehicle}`);
             },
             subtype_vehicle: m.prop(false),
-            showMessageDate: m.prop(false)
+            showMessageDate: m.prop(false),
+            currentCreatedAt: m.prop('--'),
+            formatDate: (date) => {
+                let objDate = new Date(date); 
+                return objDate.getDate() + "/" + (objDate.getMonth()+1) + "/" + objDate.getFullYear() + "   " + objDate.getHours() + ":" + objDate.getMinutes() + ":" + objDate.getSeconds();
+            }
         }
     },
     controller(p){
         this.vm = Soat.vm(p);
-        this.vm.fetchSubtypeVehicle(p.vehicle().subtype_vehicle_id())
-            .then(this.vm.subtype_vehicle)
-            .then(()=>m.redraw());
+
+        this.getPrima = () => {
+            this.vm.fetchSubtypeVehicle(p.vehicle().subtype_vehicle_id())
+                .then(this.vm.subtype_vehicle)
+                .then(()=>m.redraw());
+        }
+
 
         this.submit = (event) => {
             event.preventDefault();
@@ -65,15 +74,18 @@ export const Soat = {
             
             this.vm.working(true);
             API.post('soats',payload)
-                .then((r)=>{p.soat(new MSoat(r))})
-                .then((r) => this.vm.working(false))
-                .then(()=>this.vm.result(true))
-                .then(()=>p.refresh())
+                .then((r)=>{
+                    this.vm.currentCreatedAt(this.vm.formatDate(r.created_at));
+                    p.soat(new MSoat())
+                })
                 .then(()=>{
                     API.get(`soats/showWithPlate/${p.plate()}`).then((r)=>{
                         if(r != null){p.soats(r)}else{p.soats([])}
-                    }).then(()=>p.refresh());  
-                });
+                    }).then(()=>p.refresh()).then(()=>this.getPrima());  
+                })
+                .then((r) => this.vm.working(false))
+                .then(()=>this.vm.result(true))
+                .then(()=>p.refresh());
         }
     },
     view(c,p){
@@ -144,7 +156,8 @@ export const Soat = {
                                         </tr>
                                         <tr>
                                             <td colspan="2" >
-                                                <b>Inicio de vigencia</b> {p.soat().created_at()}
+                                                <b>Inicio de vigencia</b> {c.vm.currentCreatedAt()}
+                                                <br/><i>Esta fecha de inicio se ajusta automaticamente, despues de la vigente y/o posteriores compras, si estas existen.</i>
                                             </td>    
                                         </tr>
                                    </tbody>
@@ -161,8 +174,11 @@ export const Soat = {
                 );
             }
         }else{
-            pResult = <div id="scrollBottom" class="text-center"><Spinner /></div>;
+            if(!p.openPay()){
+                pResult = <div id="scrollBottom" class="text-center"><Spinner /></div>;
+            }
         }
+
 
 
         

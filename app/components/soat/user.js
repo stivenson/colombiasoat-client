@@ -36,7 +36,10 @@ export const User = {
                 phone: p.user().phone()
             }
             this.vm.working(true);
-            API.post('users',payload).then((r)=>{p.user(new MUser(r))}).then((r) => this.vm.working(false)).then(()=>m.redraw());
+            let updated = false;
+            API.post('users',payload).then((r)=>{
+                    if(r != false && r != 'false' && r != true && r != 'true'){p.user(new MUser(r))}else{updated=true}
+                }).then((r) => this.vm.working(false)).then(()=>{m.redraw()});
         }
     },
     view(c,p){
