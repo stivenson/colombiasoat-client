@@ -151,10 +151,12 @@ export const Soat = {
                                             <td colspan="2">
                                                 <b>Coberturas:</b><br />
                                                 <p>
-                                                    ■ Muerte y gastos funerarios: 750 SMLDV<br/>
-                                                    ■ Gastos médicos: 800 SMLDV<br/>
-                                                    ■ Incapacidad permanente: 180 SMLDV<br/>
-                                                    ■ Gastos de transporte: 10 SMLDV<br/>
+                                                    <ul>
+                                                        <li> Muerte y gastos funerarios: 750 SMLDV</li>
+                                                        <li> Gastos médicos: 800 SMLDV</li>
+                                                        <li> Incapacidad permanente: 180 SMLDV</li>
+                                                        <li> Gastos de transporte: 10 SMLDV</li>
+                                                    </ul>
                                                 </p>
                                             </td>
                                         </tr>
