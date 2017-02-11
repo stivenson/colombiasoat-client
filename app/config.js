@@ -8,6 +8,6 @@ export const Config = {
 // For production
 
 export const Config = {
-    API_URL: 'http://colombiasoat.herokuapp.com'
+    API_URL: 'https://colombiasoat.herokuapp.com'
 };
 
