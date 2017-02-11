@@ -30,3 +30,6 @@ Este es un esqueleto, gestionado por [Brunch](http://brunch.io).
     * `public/`este directorio es totalmente auto-generado y servido por el servidor HTTP.  Se escribe el código en el directorio `app/`.
     * Acá van los archivos estaticos `app/assets/` que finalmente quedan en `public/`.
     * [Brunch site](http://brunch.io), [Getting started guide](https://github.com/brunch/brunch-guide#readme)
+
+* Repo del API del cual se consumen servicios
+   * [https://github.com/stivenson/colombiasoat](https://github.com/stivenson/colombiasoat)
